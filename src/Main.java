@@ -13,7 +13,7 @@ public class Main {
 	    try {
 	        // initializing the Socket Server
 	        Server socketServer = new Server(portNumber);
-	        socketServer.start();
+	        //socketServer.start();
 	    
 		    //Creating a SocketClient object
 	        Client client = new Client ("localhost",portNumber);
