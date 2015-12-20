@@ -70,12 +70,16 @@ public class Server {
         
         output = this.client.getOutputStream();
         System.out.println("Debut de l'ecriture");
+        this.send_as_bytes(input, output);
+        /*
         while ((j = input.read()) > -1) {
             output.write(j);
         }
+        */
         System.out.println("Fin de l'ecriture");
         input.close();
         output.flush();
+        output.close(); //Dernier ajout
         System.out.println("Flush");
     }
     
@@ -87,6 +91,18 @@ public class Server {
 		return new_img;
 	
 	}
+	
+    public void send_as_bytes (InputStream in, OutputStream out) throws IOException {
+    	byte buf[] = new byte[1024];
+    	int n;
+    	while((n=in.read(buf))!=-1) {
+    		out.write(buf,0,n);
+    		if(n < 1024){
+    			break;
+    		}
+    	}
+    	out.flush();
+    }
     
     public void closeServer() throws IOException {
     	this.output.flush();

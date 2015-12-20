@@ -83,6 +83,7 @@ public class Client{
         //Writes the received image
         System.out.println("Response from server ...");
         OutputStream temp = new FileOutputStream(path + name);
+        System.out.println("Creation du temp");
         this.send_as_bytes(input, temp);
         System.out.println("... Received !");
         //Close the temporary outputStream
@@ -94,7 +95,11 @@ public class Client{
     	int n;
     	while((n=in.read(buf))!=-1) {
     		out.write(buf,0,n);
+    		if(n < 1024){
+    			break;
+    		}
     	}
+    	System.out.println("Sorti du while !");
     	out.flush();
     }
     
