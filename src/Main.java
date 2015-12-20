@@ -20,7 +20,7 @@ public class Main {
 	        //trying to establish connection to the server
 	        client.connect();
 	        //if successful, read response from server
-	        client.readResponse();
+	        //client.readResponse();
 
         } 
 	    catch (UnknownHostException e) {
