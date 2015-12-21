@@ -20,7 +20,8 @@ import javax.imageio.ImageIO;
 * A simple socket server
 * @author Dizier Romain
 */
-public class Server {
+
+public class Server{
     
     private ServerSocket serverSocket;
     private Socket client;
@@ -28,7 +29,6 @@ public class Server {
     InputStream input;
     OutputStream output;
     float[] float_values = { 1, 0, -1, 0, 0, 0, -1, 0, 1 }; //Kernel for the transformation
-    byte[] full_image = new byte[1024];
     
     public Server(int port) {
         this.port = port;
@@ -63,6 +63,12 @@ public class Server {
         System.out.println("Debut de l'ecriture");
         this.send_as_bytes(temp_in, output);
 
+        //Delete the temporary image
+        File server = new File("/home/romain/Bureau/Test/Server.jpg");
+        server.delete();
+        outputfile.delete();
+        
+        //Close the socket
         System.out.println("Fin de l'ecriture");
         temp_in.close();
         input.close();
@@ -86,31 +92,15 @@ public class Server {
 		return bos.toByteArray();
 	}
 	
-    public byte[] combine(byte[] a, byte[] b){
-        int length = a.length + b.length;
-        byte[] result = new byte[length];
-        System.arraycopy(a, 0, result, 0, a.length);
-        System.arraycopy(b, 0, result, a.length, b.length);
-        return result;
-    }
-	
     public void send_as_bytes (InputStream in, OutputStream out) throws IOException {
     	byte buf[] = new byte[1024]; //Sends data by kB 
     	int n;
     	while((n=in.read(buf))!=-1) {
-    		
-    		// full_image = this.combine(full_image, buf);
     		out.write(buf,0,n);
     		if(n < 1024){
     			break;
     		}
     	}
-
-    	//BufferedImage temp = this.apply_convo(full_image);
-    	//ImageIO.write(temp, "jpg",new File("/home/romain/Bureau/Test/Kernel.jpg"));
-		//byte[] new_buf = this.imageToByte(temp);
-		
-		// out.write(new_buf);
     	out.flush();
     }
     
@@ -144,6 +134,7 @@ public class Server {
             e.printStackTrace();
         }
     }
+
 }
 
 

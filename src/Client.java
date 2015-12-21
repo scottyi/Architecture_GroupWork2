@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
  * @author  Dizier Romain
  *
  */
+
 public class Client{
 
     private String hostname;
@@ -134,7 +135,7 @@ public class Client{
 
     public static void main(String arg[]) throws InterruptedException{
         //Creating a SocketClient object
-        Client client = new Client ("localhost",9996, 3);
+        Client client = new Client ("localhost",9996, 1);
         try {
             //trying to establish connection to the server
             client.connect();
