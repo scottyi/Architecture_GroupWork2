@@ -17,17 +17,23 @@ import javax.imageio.ImageIO;
 /**
  * A Simple Socket client that connects to a socket server
  * @author  Dizier Romain
- *
  */
 
 public class Client{
 
-    private String hostname;
-    private int port;
-    private int difficulty = 0;
-    Socket socketClient;
-    InputStream input;
-    OutputStream output;
+    private String hostname; // Name of the host
+    private int port; // Port number
+    private int difficulty = 0; // Difficulty (relative to the size image)
+    Socket socketClient; // Socket that is used by the client
+    InputStream input; // Input stream 
+    OutputStream output; // Output stream
+    
+    /**
+     * Constructor for the client
+     * @param hostname : a string representing the name of the host
+     * @param port : an integer representing port number
+     * @param difficulty : 0 < difficulty <= 5
+     */
     
     public Client(String hostname, int port, int difficulty){
         this.hostname = hostname;
@@ -35,12 +41,22 @@ public class Client{
         this.difficulty = difficulty;
     }
 
+    /**
+     * Connect the client to the server
+     * @throws UnknownHostException
+     * @throws IOException
+     */
     public void connect() throws UnknownHostException, IOException{
         System.out.println("Attempting to connect to "+hostname+":"+port);
         socketClient = new Socket(hostname,port);
         System.out.println("Connection Established");
     }
     
+    /**
+     * Send the image to the server to apply the kernel
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public void sendImage () throws FileNotFoundException, IOException {
     	//Use the outputStream of the socket
     	output = this.socketClient.getOutputStream();
@@ -93,6 +109,12 @@ public class Client{
     	}
     }
     
+    /**
+     * Transform a BufferedImage to a byte array
+     * @param image : a bufferedimage that is not null
+     * @return : the array of bytes representing the image
+     * @throws IOException
+     */
     public byte[] imageToByte (BufferedImage image) throws IOException {
         ByteArrayOutputStream bas = new ByteArrayOutputStream();
         ImageIO.write(image, "jpg", bas);
@@ -100,6 +122,12 @@ public class Client{
         return data;
     }
 
+    /**
+     * Receive the new image back from the client
+     * @param path : a string representing the path to store the image
+     * @param name : the name for the new image
+     * @throws IOException
+     */
     public void receiveImage(String path, String name) throws IOException {
     	//Use the inputStream of the socket
         input = this.socketClient.getInputStream();
@@ -113,11 +141,20 @@ public class Client{
         temp.close();
     }
     
+    /**
+     * Send the object(s) on the given inputstream to the given outputstream (by packets of 1024 bytes)
+     * @param in : an inputstream that is not null
+     * @param out : an outputstream that is not null
+     * @throws IOException
+     */
     public void send_as_bytes (InputStream in, OutputStream out) throws IOException {
+    	//Creates an array of bytes of size 1024 (= 1 kB)
     	byte buf[] = new byte[1024];
     	int n;
+    	//While there is bytes emitted on the inputstream, fill the array with 1024 of them and send it to the server
     	while((n=in.read(buf))!=-1) {
     		out.write(buf,0,n);
+    		//If the array contains less than 1024 bytes it means that this is the last packet
     		if(n < 1024){
     			break;
     		}
@@ -126,6 +163,10 @@ public class Client{
     	out.flush();
     }
     
+    /**
+     * Close all the streams and the socket
+     * @throws IOException
+     */
     public void closeClient() throws IOException {
     	this.input.close();
     	this.output.flush();
@@ -133,6 +174,11 @@ public class Client{
 		this.socketClient.close();
 	}
 
+    /**
+     * Create a client, send an image to the specified server and receive the new image back
+     * @param arg
+     * @throws InterruptedException
+     */
     public static void main(String arg[]) throws InterruptedException{
         //Creating a SocketClient object
         Client client = new Client ("localhost",9996, 1);
