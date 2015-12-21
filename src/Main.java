@@ -16,7 +16,7 @@ public class Main {
 	        //socketServer.start();
 	    
 		    //Creating a SocketClient object
-	        Client client = new Client ("localhost",portNumber);
+	        Client client = new Client ("localhost",portNumber, 3);
 	        //trying to establish connection to the server
 	        client.connect();
 	        //if successful, read response from server
